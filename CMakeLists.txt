@@ -373,15 +373,6 @@ if(LM_IMGUI_BUILD_IMGUI_COOL_BAR)
     target_link_libraries(lumengine_imgui_bundle INTERFACE imgui_cool_bar)
 endif()
 
-# Export targets (optional, mainly for install)
-# Commented out for now as it's not needed for FetchContent usage
-# install(TARGETS lumengine_imgui_bundle
-#     EXPORT lumengine_imgui_bundle-targets
-#     LIBRARY DESTINATION lib
-#     ARCHIVE DESTINATION lib
-#     RUNTIME DESTINATION bin
-# )
-
 message(STATUS "=== Lumengine ImGui Bundle Configuration ===")
 message(STATUS "ImGui: ${LM_IMGUI_BUILD_IMGUI}")
 message(STATUS "ImPlot: ${LM_IMGUI_BUILD_IMPLOT}")
