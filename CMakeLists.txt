@@ -79,9 +79,10 @@ if(LM_IMGUI_BUILD_IMGUI)
         file(GLOB IMGUI_HEADERS ${imgui_SOURCE_DIR}/*.h)
         add_library(imgui STATIC ${IMGUI_SOURCES} ${IMGUI_HEADERS})
         target_include_directories(imgui PUBLIC
-            ${imgui_SOURCE_DIR}
-            ${imgui_SOURCE_DIR}/backends
-            ${imgui_SOURCE_DIR}/misc/cpp
+            $<BUILD_INTERFACE:${imgui_SOURCE_DIR}>
+            $<BUILD_INTERFACE:${imgui_SOURCE_DIR}/backends>
+            $<BUILD_INTERFACE:${imgui_SOURCE_DIR}/misc/cpp>
+            $<INSTALL_INTERFACE:include/imgui>
         )
     endif()
 
@@ -103,7 +104,10 @@ if(LM_IMGUI_BUILD_IMPLOT)
         file(GLOB IMPLOT_SOURCES ${implot_SOURCE_DIR}/*.cpp)
         file(GLOB IMPLOT_HEADERS ${implot_SOURCE_DIR}/*.h)
         add_library(implot STATIC ${IMPLOT_SOURCES} ${IMPLOT_HEADERS})
-        target_include_directories(implot PUBLIC ${implot_SOURCE_DIR})
+        target_include_directories(implot PUBLIC
+            $<BUILD_INTERFACE:${implot_SOURCE_DIR}>
+            $<INSTALL_INTERFACE:include/implot>
+        )
         target_link_libraries(implot PUBLIC imgui)
     endif()
 
@@ -125,7 +129,10 @@ if(LM_IMGUI_BUILD_IMPLOT3D)
         file(GLOB IMPLOT3D_SOURCES ${implot3d_SOURCE_DIR}/*.cpp)
         file(GLOB IMPLOT3D_HEADERS ${implot3d_SOURCE_DIR}/*.h)
         add_library(implot3d STATIC ${IMPLOT3D_SOURCES} ${IMPLOT3D_HEADERS})
-        target_include_directories(implot3d PUBLIC ${implot3d_SOURCE_DIR})
+        target_include_directories(implot3d PUBLIC
+            $<BUILD_INTERFACE:${implot3d_SOURCE_DIR}>
+            $<INSTALL_INTERFACE:include/implot3d>
+        )
         target_link_libraries(implot3d PUBLIC imgui)
     endif()
 
@@ -147,7 +154,10 @@ if(LM_IMGUI_BUILD_IMGUI_NODE_EDITOR)
         file(GLOB NODE_EDITOR_SOURCES ${imgui_node_editor_SOURCE_DIR}/*.cpp)
         file(GLOB NODE_EDITOR_HEADERS ${imgui_node_editor_SOURCE_DIR}/*.h ${imgui_node_editor_SOURCE_DIR}/*.inl)
         add_library(imgui_node_editor STATIC ${NODE_EDITOR_SOURCES} ${NODE_EDITOR_HEADERS})
-        target_include_directories(imgui_node_editor PUBLIC ${imgui_node_editor_SOURCE_DIR})
+        target_include_directories(imgui_node_editor PUBLIC
+            $<BUILD_INTERFACE:${imgui_node_editor_SOURCE_DIR}>
+            $<INSTALL_INTERFACE:include/imgui_node_editor>
+        )
         target_link_libraries(imgui_node_editor PUBLIC imgui)
     endif()
 
@@ -169,7 +179,10 @@ if(LM_IMGUI_BUILD_IMGUIZMO)
         file(GLOB IMGUIZMO_SOURCES ${imguizmo_SOURCE_DIR}/*.cpp)
         file(GLOB IMGUIZMO_HEADERS ${imguizmo_SOURCE_DIR}/*.h)
         add_library(imguizmo STATIC ${IMGUIZMO_SOURCES} ${IMGUIZMO_HEADERS})
-        target_include_directories(imguizmo PUBLIC ${imguizmo_SOURCE_DIR})
+        target_include_directories(imguizmo PUBLIC
+            $<BUILD_INTERFACE:${imguizmo_SOURCE_DIR}>
+            $<INSTALL_INTERFACE:include/imguizmo>
+        )
         target_link_libraries(imguizmo PUBLIC imgui)
     endif()
 
@@ -195,8 +208,9 @@ if(LM_IMGUI_BUILD_IMGUI_COLOR_TEXT_EDIT)
         file(GLOB TEXT_EDIT_HEADERS ${imgui_color_text_edit_SOURCE_DIR}/*.h)
         add_library(imgui_color_text_edit STATIC ${TEXT_EDIT_SOURCES} ${TEXT_EDIT_HEADERS})
         target_include_directories(imgui_color_text_edit PUBLIC
-            ${imgui_color_text_edit_SOURCE_DIR}
-            ${imgui_color_text_edit_SOURCE_DIR}/vendor/regex/include
+            $<BUILD_INTERFACE:${imgui_color_text_edit_SOURCE_DIR}>
+            $<BUILD_INTERFACE:${imgui_color_text_edit_SOURCE_DIR}/vendor/regex/include>
+            $<INSTALL_INTERFACE:include/imgui_color_text_edit>
         )
         target_link_libraries(imgui_color_text_edit PUBLIC imgui)
         message(STATUS "  Using bundled Boost regex from vendor/regex")
@@ -230,7 +244,10 @@ if(LM_IMGUI_BUILD_IMGUI_MD)
             ${md4c_SOURCE_DIR}/src/md4c-html.c
             ${MD4C_HEADERS}
         )
-        target_include_directories(md4c PUBLIC ${md4c_SOURCE_DIR}/src)
+        target_include_directories(md4c PUBLIC
+            $<BUILD_INTERFACE:${md4c_SOURCE_DIR}/src>
+            $<INSTALL_INTERFACE:include/md4c>
+        )
         target_compile_definitions(md4c PRIVATE MD4C_USE_UTF8)
     endif()
 
@@ -248,8 +265,9 @@ if(LM_IMGUI_BUILD_IMGUI_MD)
         file(GLOB IMGUI_MD_HEADERS ${imgui_md_SOURCE_DIR}/*.h)
         add_library(imgui_md STATIC ${IMGUI_MD_SOURCES} ${IMGUI_MD_HEADERS})
         target_include_directories(imgui_md PUBLIC
-            ${imgui_md_SOURCE_DIR}
-            ${md4c_SOURCE_DIR}/src
+            $<BUILD_INTERFACE:${imgui_md_SOURCE_DIR}>
+            $<BUILD_INTERFACE:${md4c_SOURCE_DIR}/src>
+            $<INSTALL_INTERFACE:include/imgui_md>
         )
         target_link_libraries(imgui_md PUBLIC imgui md4c)
     endif()
@@ -275,7 +293,10 @@ if(LM_IMGUI_BUILD_IMGUI_TEX_INSPECT)
             ${imgui_tex_inspect_SOURCE_DIR}/imgui_tex_inspect.cpp
             ${IMGUI_TEX_INSPECT_HEADERS}
         )
-        target_include_directories(imgui_tex_inspect PUBLIC ${imgui_tex_inspect_SOURCE_DIR})
+        target_include_directories(imgui_tex_inspect PUBLIC
+            $<BUILD_INTERFACE:${imgui_tex_inspect_SOURCE_DIR}>
+            $<INSTALL_INTERFACE:include/imgui_tex_inspect>
+        )
         target_link_libraries(imgui_tex_inspect PUBLIC imgui)
     endif()
 
@@ -297,7 +318,10 @@ if(LM_IMGUI_BUILD_IMGUI_TOGGLE)
         file(GLOB IMGUI_TOGGLE_SOURCES ${imgui_toggle_SOURCE_DIR}/*.cpp)
         file(GLOB IMGUI_TOGGLE_HEADERS ${imgui_toggle_SOURCE_DIR}/*.h)
         add_library(imgui_toggle STATIC ${IMGUI_TOGGLE_SOURCES} ${IMGUI_TOGGLE_HEADERS})
-        target_include_directories(imgui_toggle PUBLIC ${imgui_toggle_SOURCE_DIR})
+        target_include_directories(imgui_toggle PUBLIC
+            $<BUILD_INTERFACE:${imgui_toggle_SOURCE_DIR}>
+            $<INSTALL_INTERFACE:include/imgui_toggle>
+        )
         target_link_libraries(imgui_toggle PUBLIC imgui)
     endif()
 
@@ -319,7 +343,10 @@ if(LM_IMGUI_BUILD_IMGUI_KNOBS)
         file(GLOB IMGUI_KNOBS_SOURCES ${imgui_knobs_SOURCE_DIR}/*.cpp)
         file(GLOB IMGUI_KNOBS_HEADERS ${imgui_knobs_SOURCE_DIR}/*.h)
         add_library(imgui_knobs STATIC ${IMGUI_KNOBS_SOURCES} ${IMGUI_KNOBS_HEADERS})
-        target_include_directories(imgui_knobs PUBLIC ${imgui_knobs_SOURCE_DIR})
+        target_include_directories(imgui_knobs PUBLIC
+            $<BUILD_INTERFACE:${imgui_knobs_SOURCE_DIR}>
+            $<INSTALL_INTERFACE:include/imgui_knobs>
+        )
         target_link_libraries(imgui_knobs PUBLIC imgui)
     endif()
 
@@ -341,7 +368,10 @@ if(LM_IMGUI_BUILD_IMGUI_COMMAND_PALETTE)
         file(GLOB CMD_PALETTE_SOURCES ${imgui_command_palette_SOURCE_DIR}/*.cpp)
         file(GLOB CMD_PALETTE_HEADERS ${imgui_command_palette_SOURCE_DIR}/*.h)
         add_library(imgui_command_palette STATIC ${CMD_PALETTE_SOURCES} ${CMD_PALETTE_HEADERS})
-        target_include_directories(imgui_command_palette PUBLIC ${imgui_command_palette_SOURCE_DIR})
+        target_include_directories(imgui_command_palette PUBLIC
+            $<BUILD_INTERFACE:${imgui_command_palette_SOURCE_DIR}>
+            $<INSTALL_INTERFACE:include/imgui_command_palette>
+        )
         target_link_libraries(imgui_command_palette PUBLIC imgui)
     endif()
 
@@ -366,7 +396,10 @@ if(LM_IMGUI_BUILD_IMGUI_COOL_BAR)
         file(GLOB COOL_BAR_SOURCES ${imgui_cool_bar_SOURCE_DIR}/*.cpp)
         file(GLOB COOL_BAR_HEADERS ${imgui_cool_bar_SOURCE_DIR}/*.h)
         add_library(imgui_cool_bar STATIC ${COOL_BAR_SOURCES} ${COOL_BAR_HEADERS})
-        target_include_directories(imgui_cool_bar PUBLIC ${imgui_cool_bar_SOURCE_DIR})
+        target_include_directories(imgui_cool_bar PUBLIC
+            $<BUILD_INTERFACE:${imgui_cool_bar_SOURCE_DIR}>
+            $<INSTALL_INTERFACE:include/imgui_cool_bar>
+        )
         target_link_libraries(imgui_cool_bar PUBLIC imgui)
     endif()
 
