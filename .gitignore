@@ -1,0 +1,34 @@
+# Build directories
+build/
+out/
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+*.cmake
+
+# Keep our custom cmake config template
+!cmake/lumengine_imgui_bundle-config.cmake.in
+
+# Compiled libraries
+*.lib
+*.a
+*.so
+*.dll
+*.dylib
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.sln
+
+# FetchContent downloaded sources
+_deps/
