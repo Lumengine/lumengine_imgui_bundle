@@ -1,6 +1,14 @@
 cmake_minimum_required(VERSION 3.20)
 project(lumengine_imgui_bundle VERSION 1.0.0 LANGUAGES C CXX)
 
+# Set policies
+if(POLICY CMP0167)
+    cmake_policy(SET CMP0167 NEW)  # Use BoostConfig.cmake
+endif()
+if(POLICY CMP0169)
+    cmake_policy(SET CMP0169 OLD)  # Allow FetchContent_Populate for now
+endif()
+
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -32,7 +40,7 @@ option(LM_IMGUI_BUILD_IMPLOT "Build ImPlot" ON)
 option(LM_IMGUI_BUILD_IMPLOT3D "Build ImPlot3D" ON)
 option(LM_IMGUI_BUILD_IMGUI_NODE_EDITOR "Build ImGui Node Editor" ON)
 option(LM_IMGUI_BUILD_IMGUIZMO "Build ImGuizmo" ON)
-option(LM_IMGUI_BUILD_IMGUI_COLOR_TEXT_EDIT "Build ImGui Color Text Edit" ON)
+option(LM_IMGUI_BUILD_IMGUI_COLOR_TEXT_EDIT "Build ImGui Color Text Edit (requires Boost)" ON)
 option(LM_IMGUI_BUILD_IMGUI_MD "Build ImGui Markdown" ON)
 option(LM_IMGUI_BUILD_IMGUI_TEX_INSPECT "Build ImGui Texture Inspector" ON)
 option(LM_IMGUI_BUILD_IMGUI_TOGGLE "Build ImGui Toggle" ON)
@@ -63,7 +71,7 @@ if(LM_IMGUI_BUILD_IMGUI)
         GIT_TAG ${LM_IMGUI_GIT_TAG}
         GIT_SHALLOW FALSE
     )
-    FetchContent_Populate(imgui)
+    FetchContent_MakeAvailable(imgui)
 
     # Create ImGui library target if not already created
     if(NOT TARGET imgui)
@@ -89,7 +97,7 @@ if(LM_IMGUI_BUILD_IMPLOT)
         GIT_TAG ${LM_IMPLOT_GIT_TAG}
         GIT_SHALLOW FALSE
     )
-    FetchContent_Populate(implot)
+    FetchContent_MakeAvailable(implot)
 
     if(NOT TARGET implot)
         file(GLOB IMPLOT_SOURCES ${implot_SOURCE_DIR}/*.cpp)
@@ -111,7 +119,7 @@ if(LM_IMGUI_BUILD_IMPLOT3D)
         GIT_TAG ${LM_IMPLOT3D_GIT_TAG}
         GIT_SHALLOW FALSE
     )
-    FetchContent_Populate(implot3d)
+    FetchContent_MakeAvailable(implot3d)
 
     if(NOT TARGET implot3d)
         file(GLOB IMPLOT3D_SOURCES ${implot3d_SOURCE_DIR}/*.cpp)
@@ -133,7 +141,7 @@ if(LM_IMGUI_BUILD_IMGUI_NODE_EDITOR)
         GIT_TAG ${LM_IMGUI_NODE_EDITOR_GIT_TAG}
         GIT_SHALLOW FALSE
     )
-    FetchContent_Populate(imgui_node_editor)
+    FetchContent_MakeAvailable(imgui_node_editor)
 
     if(NOT TARGET imgui_node_editor)
         file(GLOB NODE_EDITOR_SOURCES ${imgui_node_editor_SOURCE_DIR}/*.cpp)
@@ -155,7 +163,7 @@ if(LM_IMGUI_BUILD_IMGUIZMO)
         GIT_TAG ${LM_IMGUIZMO_GIT_TAG}
         GIT_SHALLOW FALSE
     )
-    FetchContent_Populate(imguizmo)
+    FetchContent_MakeAvailable(imguizmo)
 
     if(NOT TARGET imguizmo)
         file(GLOB IMGUIZMO_SOURCES ${imguizmo_SOURCE_DIR}/*.cpp)
@@ -177,7 +185,7 @@ if(LM_IMGUI_BUILD_IMGUI_COLOR_TEXT_EDIT)
         GIT_TAG ${LM_IMGUI_COLOR_TEXT_EDIT_GIT_TAG}
         GIT_SHALLOW FALSE
     )
-    FetchContent_Populate(imgui_color_text_edit)
+    FetchContent_MakeAvailable(imgui_color_text_edit)
 
     if(NOT TARGET imgui_color_text_edit)
         file(GLOB TEXT_EDIT_SOURCES
@@ -186,18 +194,12 @@ if(LM_IMGUI_BUILD_IMGUI_COLOR_TEXT_EDIT)
         )
         file(GLOB TEXT_EDIT_HEADERS ${imgui_color_text_edit_SOURCE_DIR}/*.h)
         add_library(imgui_color_text_edit STATIC ${TEXT_EDIT_SOURCES} ${TEXT_EDIT_HEADERS})
-        target_include_directories(imgui_color_text_edit PUBLIC ${imgui_color_text_edit_SOURCE_DIR})
+        target_include_directories(imgui_color_text_edit PUBLIC
+            ${imgui_color_text_edit_SOURCE_DIR}
+            ${imgui_color_text_edit_SOURCE_DIR}/vendor/regex/include
+        )
         target_link_libraries(imgui_color_text_edit PUBLIC imgui)
-
-        # Try to find Boost for regex support
-        find_package(Boost QUIET)
-        if(Boost_FOUND)
-            message(STATUS "  Boost found - enabling regex support in ImGui Color Text Edit")
-            target_link_libraries(imgui_color_text_edit PUBLIC Boost::boost)
-        else()
-            message(STATUS "  Boost not found - disabling regex support in ImGui Color Text Edit")
-            target_compile_definitions(imgui_color_text_edit PUBLIC IMGUI_COLORTEXT_EDIT_NO_REGEX)
-        endif()
+        message(STATUS "  Using bundled Boost regex from vendor/regex")
     endif()
 
     target_link_libraries(lumengine_imgui_bundle INTERFACE imgui_color_text_edit)
@@ -207,7 +209,7 @@ endif()
 if(LM_IMGUI_BUILD_IMGUI_MD)
     message(STATUS "Fetching ImGui Markdown...")
 
-    # First fetch md4c dependency
+    # First fetch md4c dependency (using GetProperties to avoid running its CMakeLists)
     message(STATUS "  Fetching md4c dependency...")
     FetchContent_Declare(
         md4c
@@ -215,9 +217,12 @@ if(LM_IMGUI_BUILD_IMGUI_MD)
         GIT_TAG ${LM_MD4C_GIT_TAG}
         GIT_SHALLOW FALSE
     )
-    FetchContent_Populate(md4c)
+    FetchContent_GetProperties(md4c)
+    if(NOT md4c_POPULATED)
+        FetchContent_Populate(md4c)
+    endif()
 
-    # Build md4c library
+    # Build md4c library manually
     if(NOT TARGET md4c)
         file(GLOB MD4C_HEADERS ${md4c_SOURCE_DIR}/src/*.h)
         add_library(md4c STATIC
@@ -236,7 +241,7 @@ if(LM_IMGUI_BUILD_IMGUI_MD)
         GIT_TAG ${LM_IMGUI_MD_GIT_TAG}
         GIT_SHALLOW FALSE
     )
-    FetchContent_Populate(imgui_md)
+    FetchContent_MakeAvailable(imgui_md)
 
     if(NOT TARGET imgui_md)
         file(GLOB IMGUI_MD_SOURCES ${imgui_md_SOURCE_DIR}/*.cpp)
@@ -261,7 +266,7 @@ if(LM_IMGUI_BUILD_IMGUI_TEX_INSPECT)
         GIT_TAG ${LM_IMGUI_TEX_INSPECT_GIT_TAG}
         GIT_SHALLOW FALSE
     )
-    FetchContent_Populate(imgui_tex_inspect)
+    FetchContent_MakeAvailable(imgui_tex_inspect)
 
     if(NOT TARGET imgui_tex_inspect)
         # Only build the main library, exclude demo
@@ -286,7 +291,7 @@ if(LM_IMGUI_BUILD_IMGUI_TOGGLE)
         GIT_TAG ${LM_IMGUI_TOGGLE_GIT_TAG}
         GIT_SHALLOW FALSE
     )
-    FetchContent_Populate(imgui_toggle)
+    FetchContent_MakeAvailable(imgui_toggle)
 
     if(NOT TARGET imgui_toggle)
         file(GLOB IMGUI_TOGGLE_SOURCES ${imgui_toggle_SOURCE_DIR}/*.cpp)
@@ -308,7 +313,7 @@ if(LM_IMGUI_BUILD_IMGUI_KNOBS)
         GIT_TAG ${LM_IMGUI_KNOBS_GIT_TAG}
         GIT_SHALLOW FALSE
     )
-    FetchContent_Populate(imgui_knobs)
+    FetchContent_MakeAvailable(imgui_knobs)
 
     if(NOT TARGET imgui_knobs)
         file(GLOB IMGUI_KNOBS_SOURCES ${imgui_knobs_SOURCE_DIR}/*.cpp)
@@ -330,7 +335,7 @@ if(LM_IMGUI_BUILD_IMGUI_COMMAND_PALETTE)
         GIT_TAG ${LM_IMGUI_COMMAND_PALETTE_GIT_TAG}
         GIT_SHALLOW FALSE
     )
-    FetchContent_Populate(imgui_command_palette)
+    FetchContent_MakeAvailable(imgui_command_palette)
 
     if(NOT TARGET imgui_command_palette)
         file(GLOB CMD_PALETTE_SOURCES ${imgui_command_palette_SOURCE_DIR}/*.cpp)
@@ -352,7 +357,10 @@ if(LM_IMGUI_BUILD_IMGUI_COOL_BAR)
         GIT_TAG ${LM_IMGUI_COOL_BAR_GIT_TAG}
         GIT_SHALLOW FALSE
     )
-    FetchContent_Populate(imgui_cool_bar)
+    FetchContent_GetProperties(imgui_cool_bar)
+    if(NOT imgui_cool_bar_POPULATED)
+        FetchContent_Populate(imgui_cool_bar)
+    endif()
 
     if(NOT TARGET imgui_cool_bar)
         file(GLOB COOL_BAR_SOURCES ${imgui_cool_bar_SOURCE_DIR}/*.cpp)
