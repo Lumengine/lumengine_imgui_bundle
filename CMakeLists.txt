@@ -42,6 +42,12 @@ option(LM_IMGUI_BUILD_IMGUI_KNOBS "Include ImGui Knobs" ON)
 option(LM_IMGUI_BUILD_IMGUI_COMMAND_PALETTE "Include ImGui Command Palette" ON)
 option(LM_IMGUI_BUILD_IMGUI_COOL_BAR "Include ImGui Cool Bar" ON)
 
+# Options for ImGui backends
+option(LM_IMGUI_BACKEND_WIN32 "Include Win32 backend" ON)
+option(LM_IMGUI_BACKEND_DX11 "Include DirectX 11 backend" OFF)
+option(LM_IMGUI_BACKEND_DX12 "Include DirectX 12 backend" OFF)
+option(LM_IMGUI_BACKEND_OPENGL3 "Include OpenGL3 backend" OFF)
+
 # FetchContent setup
 include(FetchContent)
 set(FETCHCONTENT_QUIET OFF)
@@ -211,6 +217,59 @@ list(APPEND ALL_SOURCES ${IMGUI_SOURCES})
 list(APPEND ALL_HEADERS ${IMGUI_HEADERS})
 list(APPEND ALL_INCLUDE_DIRS ${imgui_SOURCE_DIR})
 
+# ImGui misc/cpp (optional C++ helpers)
+file(GLOB IMGUI_MISC_CPP_SOURCES ${imgui_SOURCE_DIR}/misc/cpp/*.cpp)
+file(GLOB IMGUI_MISC_CPP_HEADERS ${imgui_SOURCE_DIR}/misc/cpp/*.h)
+if(IMGUI_MISC_CPP_SOURCES)
+    list(APPEND ALL_SOURCES ${IMGUI_MISC_CPP_SOURCES})
+    list(APPEND ALL_HEADERS ${IMGUI_MISC_CPP_HEADERS})
+    list(APPEND ALL_INCLUDE_DIRS ${imgui_SOURCE_DIR}/misc/cpp)
+    message(STATUS "  Including misc/cpp helpers")
+endif()
+
+# ImGui backends (platform/renderer implementations)
+list(APPEND ALL_INCLUDE_DIRS ${imgui_SOURCE_DIR}/backends)
+
+# Win32 backend
+if(WIN32 AND LM_IMGUI_BACKEND_WIN32)
+    if(EXISTS ${imgui_SOURCE_DIR}/backends/imgui_impl_win32.cpp)
+        list(APPEND ALL_SOURCES ${imgui_SOURCE_DIR}/backends/imgui_impl_win32.cpp)
+        list(APPEND ALL_HEADERS ${imgui_SOURCE_DIR}/backends/imgui_impl_win32.h)
+        message(STATUS "  Including Win32 backend")
+    endif()
+endif()
+
+# DirectX 11 backend
+if(WIN32 AND LM_IMGUI_BACKEND_DX11)
+    if(EXISTS ${imgui_SOURCE_DIR}/backends/imgui_impl_dx11.cpp)
+        list(APPEND ALL_SOURCES ${imgui_SOURCE_DIR}/backends/imgui_impl_dx11.cpp)
+        list(APPEND ALL_HEADERS ${imgui_SOURCE_DIR}/backends/imgui_impl_dx11.h)
+        message(STATUS "  Including DirectX 11 backend")
+    endif()
+endif()
+
+# DirectX 12 backend
+if(WIN32 AND LM_IMGUI_BACKEND_DX12)
+    if(EXISTS ${imgui_SOURCE_DIR}/backends/imgui_impl_dx12.cpp)
+        list(APPEND ALL_SOURCES ${imgui_SOURCE_DIR}/backends/imgui_impl_dx12.cpp)
+        list(APPEND ALL_HEADERS ${imgui_SOURCE_DIR}/backends/imgui_impl_dx12.h)
+        message(STATUS "  Including DirectX 12 backend")
+    endif()
+endif()
+
+# OpenGL3 backend (cross-platform)
+if(LM_IMGUI_BACKEND_OPENGL3)
+    if(EXISTS ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp)
+        list(APPEND ALL_SOURCES ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp)
+        list(APPEND ALL_HEADERS ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.h)
+        message(STATUS "  Including OpenGL3 backend")
+    endif()
+endif()
+
+# Note: Vulkan, GLFW, SDL2, SDL3 backends are NOT included by default
+# as they require external dependencies. Users can include them manually
+# if they have these dependencies installed by copying the backend files.
+
 # ImPlot
 if(LM_IMGUI_BUILD_IMPLOT)
     file(GLOB IMPLOT_SOURCES ${implot_SOURCE_DIR}/*.cpp)
@@ -357,17 +416,42 @@ if(NOT WIN32)
     target_compile_options(imgui_bundle PRIVATE -fvisibility=hidden)
 endif()
 
+# Link required system libraries for backends
+if(WIN32)
+    set(BACKEND_LIBS "")
+
+    if(LM_IMGUI_BACKEND_DX11)
+        list(APPEND BACKEND_LIBS d3d11.lib)
+    endif()
+
+    if(LM_IMGUI_BACKEND_DX12)
+        list(APPEND BACKEND_LIBS d3d12.lib dxgi.lib d3dcompiler.lib)
+    endif()
+
+    if(BACKEND_LIBS)
+        target_link_libraries(imgui_bundle PRIVATE ${BACKEND_LIBS})
+    endif()
+endif()
+
 # Print configuration summary
 message(STATUS "=== Lumengine ImGui Bundle Configuration ===")
 message(STATUS "Single shared library: imgui_bundle.dll")
-message(STATUS "ImPlot: ${LM_IMGUI_BUILD_IMPLOT}")
-message(STATUS "ImPlot3D: ${LM_IMGUI_BUILD_IMPLOT3D}")
-message(STATUS "ImGui Node Editor: ${LM_IMGUI_BUILD_IMGUI_NODE_EDITOR}")
-message(STATUS "ImGuizmo: ${LM_IMGUI_BUILD_IMGUIZMO}")
-message(STATUS "ImGui Color Text Edit: ${LM_IMGUI_BUILD_IMGUI_COLOR_TEXT_EDIT}")
-message(STATUS "ImGui Markdown: ${LM_IMGUI_BUILD_IMGUI_MD}")
-message(STATUS "ImGui Toggle: ${LM_IMGUI_BUILD_IMGUI_TOGGLE}")
-message(STATUS "ImGui Knobs: ${LM_IMGUI_BUILD_IMGUI_KNOBS}")
-message(STATUS "ImGui Command Palette: ${LM_IMGUI_BUILD_IMGUI_COMMAND_PALETTE}")
-message(STATUS "ImGui Cool Bar: ${LM_IMGUI_BUILD_IMGUI_COOL_BAR}")
+message(STATUS "")
+message(STATUS "Libraries:")
+message(STATUS "  ImPlot: ${LM_IMGUI_BUILD_IMPLOT}")
+message(STATUS "  ImPlot3D: ${LM_IMGUI_BUILD_IMPLOT3D}")
+message(STATUS "  ImGui Node Editor: ${LM_IMGUI_BUILD_IMGUI_NODE_EDITOR}")
+message(STATUS "  ImGuizmo: ${LM_IMGUI_BUILD_IMGUIZMO}")
+message(STATUS "  ImGui Color Text Edit: ${LM_IMGUI_BUILD_IMGUI_COLOR_TEXT_EDIT}")
+message(STATUS "  ImGui Markdown: ${LM_IMGUI_BUILD_IMGUI_MD}")
+message(STATUS "  ImGui Toggle: ${LM_IMGUI_BUILD_IMGUI_TOGGLE}")
+message(STATUS "  ImGui Knobs: ${LM_IMGUI_BUILD_IMGUI_KNOBS}")
+message(STATUS "  ImGui Command Palette: ${LM_IMGUI_BUILD_IMGUI_COMMAND_PALETTE}")
+message(STATUS "  ImGui Cool Bar: ${LM_IMGUI_BUILD_IMGUI_COOL_BAR}")
+message(STATUS "")
+message(STATUS "Backends:")
+message(STATUS "  Win32: ${LM_IMGUI_BACKEND_WIN32}")
+message(STATUS "  DirectX 11: ${LM_IMGUI_BACKEND_DX11}")
+message(STATUS "  DirectX 12: ${LM_IMGUI_BACKEND_DX12}")
+message(STATUS "  OpenGL3: ${LM_IMGUI_BACKEND_OPENGL3}")
 message(STATUS "==========================================")
