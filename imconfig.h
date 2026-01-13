@@ -47,6 +47,11 @@
 #define IMPLOT3D_API IMGUI_API
 #endif
 
+// imgui-node_editor uses the same API macro as ImGui
+#ifndef IMGUI_NODE_EDITOR_API
+#define IMGUI_NODE_EDITOR_API IMGUI_API
+#endif
+
 //---- Use 32-bit vertex indices (default is 16-bit) to allow large meshes with more than 64K vertices.
 // Your renderer backend will need to support it (most example renderer backends support both 16/32-bit indices).
 //#define ImDrawIdx unsigned int
