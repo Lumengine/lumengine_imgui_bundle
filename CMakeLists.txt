@@ -48,6 +48,27 @@ option(LM_IMGUI_BUILD_IMGUI_KNOBS "Build ImGui Knobs" ON)
 option(LM_IMGUI_BUILD_IMGUI_COMMAND_PALETTE "Build ImGui Command Palette" ON)
 option(LM_IMGUI_BUILD_IMGUI_COOL_BAR "Build ImGui Cool Bar" ON)
 option(LM_IMGUI_BUILD_IMFILE_DIALOG "Build ImFile Dialog" OFF)  # Disabled by default
+option(LM_IMGUI_BUILD_MISC_CPP "Build Dear ImGui misc/cpp helpers" ON)
+option(LM_IMGUI_ENABLE_BACKENDS "Build Dear ImGui backends" ON)
+
+# Backend defaults: keep conservative to avoid pulling missing deps by default
+set(LM_IMGUI_BACKEND_WIN32_DEFAULT OFF)
+set(LM_IMGUI_BACKEND_DX11_DEFAULT OFF)
+set(LM_IMGUI_BACKEND_OPENGL3_DEFAULT OFF)
+set(LM_IMGUI_BACKEND_GLFW_DEFAULT OFF)
+set(LM_IMGUI_BACKEND_SDL2_DEFAULT OFF)
+if(WIN32)
+    set(LM_IMGUI_BACKEND_WIN32_DEFAULT ON)
+    if(MSVC)
+        set(LM_IMGUI_BACKEND_DX11_DEFAULT ON)
+    endif()
+endif()
+
+option(LM_IMGUI_BACKEND_WIN32 "Build ImGui Win32 backend" ${LM_IMGUI_BACKEND_WIN32_DEFAULT})
+option(LM_IMGUI_BACKEND_DX11 "Build ImGui DirectX11 backend" ${LM_IMGUI_BACKEND_DX11_DEFAULT})
+option(LM_IMGUI_BACKEND_OPENGL3 "Build ImGui OpenGL3 backend" ${LM_IMGUI_BACKEND_OPENGL3_DEFAULT})
+option(LM_IMGUI_BACKEND_GLFW "Build ImGui GLFW backend" ${LM_IMGUI_BACKEND_GLFW_DEFAULT})
+option(LM_IMGUI_BACKEND_SDL2 "Build ImGui SDL2 backend" ${LM_IMGUI_BACKEND_SDL2_DEFAULT})
 
 # FetchContent setup
 include(FetchContent)
@@ -77,7 +98,44 @@ if(LM_IMGUI_BUILD_IMGUI)
     if(NOT TARGET imgui)
         file(GLOB IMGUI_SOURCES ${imgui_SOURCE_DIR}/*.cpp)
         file(GLOB IMGUI_HEADERS ${imgui_SOURCE_DIR}/*.h)
-        add_library(imgui STATIC ${IMGUI_SOURCES} ${IMGUI_HEADERS})
+
+        set(IMGUI_MISC_SOURCES)
+        if(LM_IMGUI_BUILD_MISC_CPP)
+            file(GLOB IMGUI_MISC_SOURCES ${imgui_SOURCE_DIR}/misc/cpp/*.cpp)
+        endif()
+
+        set(IMGUI_BACKEND_SOURCES)
+        set(IMGUI_BACKEND_HEADERS)
+        if(LM_IMGUI_ENABLE_BACKENDS)
+            if(LM_IMGUI_BACKEND_WIN32)
+                list(APPEND IMGUI_BACKEND_SOURCES ${imgui_SOURCE_DIR}/backends/imgui_impl_win32.cpp)
+                list(APPEND IMGUI_BACKEND_HEADERS ${imgui_SOURCE_DIR}/backends/imgui_impl_win32.h)
+            endif()
+            if(LM_IMGUI_BACKEND_DX11)
+                list(APPEND IMGUI_BACKEND_SOURCES ${imgui_SOURCE_DIR}/backends/imgui_impl_dx11.cpp)
+                list(APPEND IMGUI_BACKEND_HEADERS ${imgui_SOURCE_DIR}/backends/imgui_impl_dx11.h)
+            endif()
+            if(LM_IMGUI_BACKEND_OPENGL3)
+                list(APPEND IMGUI_BACKEND_SOURCES ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp)
+                list(APPEND IMGUI_BACKEND_HEADERS ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.h)
+            endif()
+            if(LM_IMGUI_BACKEND_GLFW)
+                list(APPEND IMGUI_BACKEND_SOURCES ${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.cpp)
+                list(APPEND IMGUI_BACKEND_HEADERS ${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.h)
+            endif()
+            if(LM_IMGUI_BACKEND_SDL2)
+                list(APPEND IMGUI_BACKEND_SOURCES ${imgui_SOURCE_DIR}/backends/imgui_impl_sdl2.cpp)
+                list(APPEND IMGUI_BACKEND_HEADERS ${imgui_SOURCE_DIR}/backends/imgui_impl_sdl2.h)
+            endif()
+        endif()
+
+        add_library(imgui STATIC
+            ${IMGUI_SOURCES}
+            ${IMGUI_HEADERS}
+            ${IMGUI_MISC_SOURCES}
+            ${IMGUI_BACKEND_SOURCES}
+            ${IMGUI_BACKEND_HEADERS}
+        )
         target_include_directories(imgui PUBLIC
             $<BUILD_INTERFACE:${imgui_SOURCE_DIR}>
             $<BUILD_INTERFACE:${imgui_SOURCE_DIR}/backends>
