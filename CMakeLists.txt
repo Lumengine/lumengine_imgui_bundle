@@ -22,7 +22,7 @@ set(LM_IMPLOT_GIT_TAG "2babf8b" CACHE STRING "ImPlot git commit/tag")
 set(LM_IMPLOT3D_GIT_TAG "6a27385" CACHE STRING "ImPlot3D git commit/tag")
 set(LM_IMGUI_NODE_EDITOR_GIT_TAG "bb59cc7" CACHE STRING "ImGui Node Editor git commit/tag")
 set(LM_IMGUIZMO_GIT_TAG "b2e2e00" CACHE STRING "ImGuizmo git commit/tag")
-set(LM_IMGUI_COLOR_TEXT_EDIT_GIT_TAG "e3f369f" CACHE STRING "ImGui Color Text Edit git commit/tag")
+set(LM_IMGUI_COLOR_TEXT_EDIT_GIT_TAG "ca2f9f1" CACHE STRING "ImGui Color Text Edit git commit/tag")
 set(LM_IMGUI_MD_GIT_TAG "acb65f6" CACHE STRING "ImGui Markdown git commit/tag")
 set(LM_MD4C_GIT_TAG "e9ff661" CACHE STRING "md4c git commit/tag")
 set(LM_IMGUI_TOGGLE_GIT_TAG "74c4100" CACHE STRING "ImGui Toggle git commit/tag")
@@ -105,7 +105,7 @@ endif()
 # ImGui Color Text Edit
 if(LM_IMGUI_BUILD_IMGUI_COLOR_TEXT_EDIT)
     FetchContent_Declare(imgui_color_text_edit
-        GIT_REPOSITORY https://github.com/pthom/ImGuiColorTextEdit.git
+        GIT_REPOSITORY https://github.com/BalazsJako/ImGuiColorTextEdit.git
         GIT_TAG ${LM_IMGUI_COLOR_TEXT_EDIT_GIT_TAG}
         GIT_SHALLOW FALSE
     )
@@ -310,13 +310,11 @@ endif()
 if(LM_IMGUI_BUILD_IMGUI_COLOR_TEXT_EDIT)
     list(APPEND ALL_SOURCES
         ${imgui_color_text_edit_SOURCE_DIR}/TextEditor.cpp
-        ${imgui_color_text_edit_SOURCE_DIR}/LanguageDefinitions.cpp
     )
     file(GLOB TEXT_EDIT_HEADERS ${imgui_color_text_edit_SOURCE_DIR}/*.h)
     list(APPEND ALL_HEADERS ${TEXT_EDIT_HEADERS})
     list(APPEND ALL_INCLUDE_DIRS
         ${imgui_color_text_edit_SOURCE_DIR}
-        ${imgui_color_text_edit_SOURCE_DIR}/vendor/regex/include
     )
 endif()
 
