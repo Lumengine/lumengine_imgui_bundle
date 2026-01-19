@@ -401,6 +401,7 @@ endif()
 target_compile_definitions(imgui_bundle
     PUBLIC
         IMGUI_USER_CONFIG="${IMGUI_USER_CONFIG_PATH}"
+        IMGUI_BUNDLE_PYTHON_API
     PRIVATE
         imgui_bundle_EXPORTS  # Define export macro for DLL building
 )
