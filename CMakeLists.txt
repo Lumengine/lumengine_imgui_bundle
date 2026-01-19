@@ -25,7 +25,7 @@ set(LM_IMGUIZMO_GIT_TAG "b2e2e00" CACHE STRING "ImGuizmo git commit/tag")
 set(LM_IMGUI_COLOR_TEXT_EDIT_GIT_TAG "10ac08e" CACHE STRING "ImGui Color Text Edit git commit/tag")
 set(LM_IMGUI_MD_GIT_TAG "acb65f6" CACHE STRING "ImGui Markdown git commit/tag")
 set(LM_MD4C_GIT_TAG "e9ff661" CACHE STRING "md4c git commit/tag")
-set(LM_IMGUI_TOGGLE_GIT_TAG "74c4100" CACHE STRING "ImGui Toggle git commit/tag")
+set(LM_IMGUI_TOGGLE_GIT_TAG "504d0ff" CACHE STRING "ImGui Toggle git commit/tag")
 set(LM_IMGUI_KNOBS_GIT_TAG "ee9db0b" CACHE STRING "ImGui Knobs git commit/tag")
 set(LM_IMGUI_COMMAND_PALETTE_GIT_TAG "ce7ec18" CACHE STRING "ImGui Command Palette git commit/tag")
 set(LM_IMGUI_COOL_BAR_GIT_TAG "7e184da" CACHE STRING "ImGui Cool Bar git commit/tag")
@@ -129,7 +129,7 @@ endif()
 # ImGui Toggle
 if(LM_IMGUI_BUILD_IMGUI_TOGGLE)
     FetchContent_Declare(imgui_toggle
-        GIT_REPOSITORY https://github.com/pthom/imgui_toggle.git
+        GIT_REPOSITORY https://github.com/Lumengine/imgui_toggle.git
         GIT_TAG ${LM_IMGUI_TOGGLE_GIT_TAG}
         GIT_SHALLOW FALSE
     )
