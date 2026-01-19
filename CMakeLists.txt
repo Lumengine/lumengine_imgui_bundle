@@ -26,8 +26,8 @@ set(LM_IMGUI_COLOR_TEXT_EDIT_GIT_TAG "7a8f28b" CACHE STRING "ImGui Color Text Ed
 set(LM_IMGUI_MD_GIT_TAG "acb65f6" CACHE STRING "ImGui Markdown git commit/tag")
 set(LM_MD4C_GIT_TAG "e9ff661" CACHE STRING "md4c git commit/tag")
 set(LM_IMGUI_TOGGLE_GIT_TAG "6b9ced1" CACHE STRING "ImGui Toggle git commit/tag")
-set(LM_IMGUI_KNOBS_GIT_TAG "ee9db0b" CACHE STRING "ImGui Knobs git commit/tag")
-set(LM_IMGUI_COMMAND_PALETTE_GIT_TAG "ce7ec18" CACHE STRING "ImGui Command Palette git commit/tag")
+set(LM_IMGUI_KNOBS_GIT_TAG "30785a4" CACHE STRING "ImGui Knobs git commit/tag")
+set(LM_IMGUI_COMMAND_PALETTE_GIT_TAG "6f09a39" CACHE STRING "ImGui Command Palette git commit/tag")
 set(LM_IMGUI_COOL_BAR_GIT_TAG "7e184da" CACHE STRING "ImGui Cool Bar git commit/tag")
 
 # Options to enable/disable each library component
@@ -138,7 +138,7 @@ endif()
 # ImGui Knobs
 if(LM_IMGUI_BUILD_IMGUI_KNOBS)
     FetchContent_Declare(imgui_knobs
-        GIT_REPOSITORY https://github.com/pthom/imgui-knobs.git
+        GIT_REPOSITORY https://github.com/Lumengine/imgui-knobs.git
         GIT_TAG ${LM_IMGUI_KNOBS_GIT_TAG}
         GIT_SHALLOW FALSE
     )
@@ -147,7 +147,7 @@ endif()
 # ImGui Command Palette
 if(LM_IMGUI_BUILD_IMGUI_COMMAND_PALETTE)
     FetchContent_Declare(imgui_command_palette
-        GIT_REPOSITORY https://github.com/pthom/imgui-command-palette.git
+        GIT_REPOSITORY https://github.com/Lumengine/imgui-command-palette.git
         GIT_TAG ${LM_IMGUI_COMMAND_PALETTE_GIT_TAG}
         GIT_SHALLOW FALSE
     )
