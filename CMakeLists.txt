@@ -20,7 +20,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(LM_IMGUI_GIT_TAG "74cba1e" CACHE STRING "ImGui git commit/tag")
 set(LM_IMPLOT_GIT_TAG "2babf8b" CACHE STRING "ImPlot git commit/tag")
 set(LM_IMPLOT3D_GIT_TAG "6a27385" CACHE STRING "ImPlot3D git commit/tag")
-set(LM_IMGUI_NODE_EDITOR_GIT_TAG "bb59cc7" CACHE STRING "ImGui Node Editor git commit/tag")
+set(LM_IMGUI_NODE_EDITOR_GIT_TAG "812436c" CACHE STRING "ImGui Node Editor git commit/tag")
 set(LM_IMGUIZMO_GIT_TAG "b2e2e00" CACHE STRING "ImGuizmo git commit/tag")
 set(LM_IMGUI_COLOR_TEXT_EDIT_GIT_TAG "10ac08e" CACHE STRING "ImGui Color Text Edit git commit/tag")
 set(LM_IMGUI_MD_GIT_TAG "acb65f6" CACHE STRING "ImGui Markdown git commit/tag")
@@ -87,7 +87,7 @@ endif()
 # ImGui Node Editor
 if(LM_IMGUI_BUILD_IMGUI_NODE_EDITOR)
     FetchContent_Declare(imgui_node_editor
-        GIT_REPOSITORY https://github.com/pthom/imgui-node-editor.git
+        GIT_REPOSITORY https://github.com/Lumengine/imgui-node-editor.git
         GIT_TAG ${LM_IMGUI_NODE_EDITOR_GIT_TAG}
         GIT_SHALLOW FALSE
     )
