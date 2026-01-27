@@ -23,7 +23,7 @@ set(LM_IMPLOT3D_GIT_TAG "6a27385" CACHE STRING "ImPlot3D git commit/tag")
 set(LM_IMGUI_NODE_EDITOR_GIT_TAG "4012569" CACHE STRING "ImGui Node Editor git commit/tag")
 set(LM_IMGUIZMO_GIT_TAG "b2e2e00" CACHE STRING "ImGuizmo git commit/tag")
 set(LM_IMGUI_COLOR_TEXT_EDIT_GIT_TAG "7a8f28b" CACHE STRING "ImGui Color Text Edit git commit/tag")
-set(LM_IMGUI_MD_GIT_TAG "acb65f6" CACHE STRING "ImGui Markdown git commit/tag")
+set(LM_IMGUI_MD_GIT_TAG "e8e7e5e" CACHE STRING "ImGui Markdown git commit/tag")
 set(LM_MD4C_GIT_TAG "e9ff661" CACHE STRING "md4c git commit/tag")
 set(LM_IMGUI_TOGGLE_GIT_TAG "6b9ced1" CACHE STRING "ImGui Toggle git commit/tag")
 set(LM_IMGUI_KNOBS_GIT_TAG "30785a4" CACHE STRING "ImGui Knobs git commit/tag")
@@ -120,7 +120,7 @@ if(LM_IMGUI_BUILD_IMGUI_MD)
     )
 
     FetchContent_Declare(imgui_md
-        GIT_REPOSITORY https://github.com/pthom/imgui_md.git
+        GIT_REPOSITORY https://github.com/Lumengine/imgui_md.git
         GIT_TAG ${LM_IMGUI_MD_GIT_TAG}
         GIT_SHALLOW FALSE
     )
