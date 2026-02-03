@@ -377,8 +377,14 @@ endif()
 
 add_library(imgui_bundle SHARED ${ALL_SOURCES} ${ALL_HEADERS})
 
-# Remove duplicates from include dirs
+# Remove duplicates from include dirs and headers
 list(REMOVE_DUPLICATES ALL_INCLUDE_DIRS)
+list(REMOVE_DUPLICATES ALL_HEADERS)
+
+# Set PUBLIC_HEADER property so parent projects can install headers via the target
+set_target_properties(imgui_bundle PROPERTIES
+    PUBLIC_HEADER "${ALL_HEADERS}"
+)
 
 # Set include directories
 target_include_directories(imgui_bundle PUBLIC
