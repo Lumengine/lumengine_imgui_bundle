@@ -454,3 +454,141 @@ message(STATUS "  DirectX 11: ${LM_IMGUI_BACKEND_DX11}")
 message(STATUS "  DirectX 12: ${LM_IMGUI_BACKEND_DX12}")
 message(STATUS "  OpenGL3: ${LM_IMGUI_BACKEND_OPENGL3}")
 message(STATUS "==========================================")
+
+# ============================================================================
+# Installation
+# ============================================================================
+
+# Install the shared library
+install(TARGETS imgui_bundle
+    EXPORT imgui_bundle_targets
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+)
+
+# Install headers to include/imgui_bundle (flat structure for easy includes)
+# Users can then do: #include <imgui.h> or #include <implot.h>
+
+# Core ImGui headers
+install(FILES
+    ${imgui_SOURCE_DIR}/imgui.h
+    ${imgui_SOURCE_DIR}/imgui_internal.h
+    ${imgui_SOURCE_DIR}/imconfig.h
+    ${imgui_SOURCE_DIR}/imstb_rectpack.h
+    ${imgui_SOURCE_DIR}/imstb_textedit.h
+    ${imgui_SOURCE_DIR}/imstb_truetype.h
+    DESTINATION include/imgui_bundle
+)
+
+# ImGui misc/cpp headers
+if(EXISTS ${imgui_SOURCE_DIR}/misc/cpp/imgui_stdlib.h)
+    install(FILES ${imgui_SOURCE_DIR}/misc/cpp/imgui_stdlib.h
+        DESTINATION include/imgui_bundle
+    )
+endif()
+
+# Backend headers
+if(WIN32 AND LM_IMGUI_BACKEND_WIN32 AND EXISTS ${imgui_SOURCE_DIR}/backends/imgui_impl_win32.h)
+    install(FILES ${imgui_SOURCE_DIR}/backends/imgui_impl_win32.h
+        DESTINATION include/imgui_bundle
+    )
+endif()
+
+# ImPlot headers
+if(LM_IMGUI_BUILD_IMPLOT)
+    install(FILES
+        ${implot_SOURCE_DIR}/implot.h
+        ${implot_SOURCE_DIR}/implot_internal.h
+        DESTINATION include/imgui_bundle
+    )
+endif()
+
+# ImPlot3D headers
+if(LM_IMGUI_BUILD_IMPLOT3D)
+    install(FILES
+        ${implot3d_SOURCE_DIR}/implot3d.h
+        ${implot3d_SOURCE_DIR}/implot3d_internal.h
+        DESTINATION include/imgui_bundle
+    )
+endif()
+
+# ImGui Node Editor headers
+if(LM_IMGUI_BUILD_IMGUI_NODE_EDITOR)
+    install(FILES
+        ${imgui_node_editor_SOURCE_DIR}/imgui_node_editor.h
+        DESTINATION include/imgui_bundle
+    )
+endif()
+
+# ImGuizmo headers
+if(LM_IMGUI_BUILD_IMGUIZMO)
+    install(FILES
+        ${imguizmo_SOURCE_DIR}/ImGuizmo.h
+        ${imguizmo_SOURCE_DIR}/ImCurveEdit.h
+        ${imguizmo_SOURCE_DIR}/ImGradient.h
+        ${imguizmo_SOURCE_DIR}/ImSequencer.h
+        ${imguizmo_SOURCE_DIR}/ImZoomSlider.h
+        ${imguizmo_SOURCE_DIR}/GraphEditor.h
+        DESTINATION include/imgui_bundle
+    )
+endif()
+
+# ImGui Color Text Edit headers
+if(LM_IMGUI_BUILD_IMGUI_COLOR_TEXT_EDIT)
+    install(FILES
+        ${imgui_color_text_edit_SOURCE_DIR}/TextEditor.h
+        DESTINATION include/imgui_bundle
+    )
+endif()
+
+# ImGui Markdown headers
+if(LM_IMGUI_BUILD_IMGUI_MD)
+    install(FILES
+        ${imgui_md_SOURCE_DIR}/imgui_md.h
+        DESTINATION include/imgui_bundle
+    )
+endif()
+
+# ImGui Toggle headers
+if(LM_IMGUI_BUILD_IMGUI_TOGGLE)
+    install(FILES
+        ${imgui_toggle_SOURCE_DIR}/imgui_toggle.h
+        ${imgui_toggle_SOURCE_DIR}/imgui_toggle_palette.h
+        ${imgui_toggle_SOURCE_DIR}/imgui_toggle_presets.h
+        ${imgui_toggle_SOURCE_DIR}/imgui_toggle_renderer.h
+        DESTINATION include/imgui_bundle
+    )
+endif()
+
+# ImGui Knobs headers
+if(LM_IMGUI_BUILD_IMGUI_KNOBS)
+    install(FILES
+        ${imgui_knobs_SOURCE_DIR}/imgui-knobs.h
+        DESTINATION include/imgui_bundle
+    )
+endif()
+
+# ImGui Command Palette headers
+if(LM_IMGUI_BUILD_IMGUI_COMMAND_PALETTE)
+    install(FILES
+        ${imgui_command_palette_SOURCE_DIR}/imcmd_command_palette.h
+        DESTINATION include/imgui_bundle
+    )
+endif()
+
+# ImGui Cool Bar headers
+if(LM_IMGUI_BUILD_IMGUI_COOL_BAR)
+    install(FILES
+        ${imgui_cool_bar_SOURCE_DIR}/ImCoolbar.h
+        DESTINATION include/imgui_bundle
+    )
+endif()
+
+# Install custom imconfig.h if it exists
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/imconfig.h)
+    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/imconfig.h
+        DESTINATION include/imgui_bundle
+        RENAME imconfig_bundle.h
+    )
+endif()
